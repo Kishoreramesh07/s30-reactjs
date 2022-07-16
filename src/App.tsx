@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Card, CardContent, Avatar, Typography, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { config } from "./index";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
@@ -15,15 +16,17 @@ const theme = createTheme({
 });
 
 function App() {
+  // Profile State
   const [profileData, setProfileData] = useState(() => ({
     name: { title: '', first: '', last: '' },
     email: "",
     profileImg: "",
   }));
 
+  // Fetched profileData and saved it in local storage
   const apiCall = async () => {
     try {
-      const response = await axios.get(`https://randomuser.me/api`);
+      const response = await axios.get(`${config.endpoint}`);
 
       if (response.status === 200) {
         const result = response.data.results[0];
@@ -36,17 +39,18 @@ function App() {
         localStorage.setItem('profileData', JSON.stringify(responseProfileData));
       }
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   }
 
+  // Call API Fetch on component render/Mounted
   useEffect(() => {
     apiCall();
   }, []);
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ maxWidth: 345, m: '10% auto 0', textAlign: 'center' }}>
+      <Box sx={{ maxWidth: 345, m: '11% auto 0', textAlign: 'center' }}>
         <Card sx={{ py: '3rem', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px', mb: 4, borderRadius: 1.25 }}>
           <Avatar
             alt={profileData.name.title + ' ' + profileData.name.first + ' ' + profileData.name.last}
